@@ -1,16 +1,39 @@
-# Nerfies
+# An Analysis of Streaming Deep Reinforcement Learning for Adaptive Continual Learning in Robotics
 
-This is the repository that contains source code for the [Nerfies website](https://nerfies.github.io).
+This repository contains the project website for **An Analysis of Streaming Deep Reinforcement Learning for Adaptive Continual Learning in Robotics**.
 
-If you find Nerfies useful for your work please cite:
+The page presents:
+
+- An overview and abstract of the work
+- Quadruped locomotion adaptation experiments
+- Manipulation experiments in Push Cube and Transport Box environments
+- Autoplaying task videos and result figures
+- Paper, author, lab, and code links
+
+## Preview Locally
+
+The site is a static HTML page. From the repository root, run:
+
+```bash
+python3 -m http.server 8000
 ```
-@article{park2021nerfies
-  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
-  title     = {Nerfies: Deformable Neural Radiance Fields},
-  journal   = {ICCV},
-  year      = {2021},
-}
+
+Open [http://localhost:8000](http://localhost:8000) in a browser.
+
+Opening `index.html` directly also works for most content, but a local server is recommended for consistent media loading.
+
+## Project Structure
+
+```text
+index.html                 Main project page
+static/css/index.css       Custom page styles
+static/images/             Figures, logos, and favicon assets
+static/videos/             Teaser and task demonstration videos
+static/js/                 Carousel and slider scripts
 ```
 
-# Website License
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+Task videos are stored in `static/videos/` and include the quadruped Broken Leg, Slippery Floor, and Goal Shift demonstrations, along with Push Cube and Transport Box manipulation demonstrations.
+
+## License
+
+This website is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
