@@ -1,0 +1,274 @@
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: #FAF7EF;
+}
+
+h1,
+h2,
+h3,
+h5,
+h6 {
+  font-family: 'DM Serif Display', serif;
+}
+
+.container{
+  padding-top: 30px;
+}
+
+.footer{
+  background-color: #FAF7EF;
+}
+
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 15px;
+    margin-right: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 1rem;
+}
+
+.teaser {
+  font-family: 'DM Sans', sans-serif;
+}
+
+.teaser video {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+.teaser + .section {
+  padding-top: 2.5rem;
+}
+
+.teaser + .section .container {
+  padding-top: 0;
+}
+
+.publication-links{
+  text-align: left;
+}
+
+.publication-links .button {
+  border-radius: 10px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.publication-links .button:hover {
+  background-color: #555;
+  border-color: #555;
+}
+
+.callout-card {
+  padding: 1.25rem 1.5rem;
+  background-color: #f3ead8;
+  /* border: 1px solid #e5d8c1; */
+  border-radius: 6px;
+}
+
+.section-soft .figure-wide {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-soft .results-grid {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.task-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0 0;
+}
+
+.manipulation-tasks {
+  grid-template-columns: repeat(2, minmax(220px, 30%));
+  justify-content: center;
+}
+
+.task-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.task-description {
+  margin: 0 !important;
+}
+
+.task-item video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  background-color: #eee;
+}
+
+@media screen and (max-width: 768px) {
+  .task-list,
+  .manipulation-tasks {
+    grid-template-columns: 1fr;
+  }
+
+  .task-item {
+    gap: 0.75rem;
+  }
+
+  .task-item video {
+    width: min(100%, 320px);
+  }
+}
+
+.publication-title {
+  text-align: left;
+}
+
+.publication-banner {
+  max-height: parent;
+
+}
+
+.publication-banner video {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  object-fit: fit;
+}
+
+.publication-header .hero-body {
+}
+
+.publication-title {
+    font-family: 'DM Serif Display', serif;
+}
+
+.publication-authors {
+    font-family: 'DM Sans', sans-serif;
+    text-align: left;
+}
+
+.publication-venue {
+    color: #555;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.publication-awards {
+    color: #ff3860;
+    width: fit-content;
+    font-weight: bolder;
+}
+
+.publication-authors {
+}
+
+.publication-authors a {
+   color: hsl(204, 86%, 53%) !important;
+   text-decoration: none;
+   border-radius: 3px;
+   transition: background-color 0.2s ease;
+}
+
+.publication-authors a:hover {
+  color: hsl(204, 86%, 38%) !important;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-banner img {
+}
+
+.publication-authors {
+  /*color: #4286f4;*/
+}
+
+.publication-video {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+
+    overflow: hidden;
+    border-radius: 10px !important;
+}
+
+.publication-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.publication-body img {
+}
+
+.results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 0;
+}
+
+.results-carousel video {
+  margin: 0;
+}
+
+
+.interpolation-panel {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.interpolation-panel .interpolation-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.interpolation-video-column {
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+#interpolation-image-wrapper {
+  width: 100%;
+}
+#interpolation-image-wrapper img {
+  border-radius: 5px;
+}
+
+.navbar{
+    background-color: #FAF7EF;
+
+}

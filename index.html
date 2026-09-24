@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="We present an analysis of streaming deep reinforcement learning for continual robotic adaptation, focusing on how optimizers and plasticity loss mitigation techniques affect adaptation performance.">
+  <meta name="keywords" content=" Continual Learning, Reinforcement Learning, Robotic Adaptation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An Analysis of Streaming Deep Reinforcement Learning for Adaptive Continual Learning in Robotics</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro|DM+Sans|DM+Serif+Display|Noto+Serif"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" type="image/png" href="./static/images/favicon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+  <!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com" target="_blank" rel="noopener noreferrer">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io" target="_blank" rel="noopener noreferrer">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io" target="_blank" rel="noopener noreferrer">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io" target="_blank" rel="noopener noreferrer">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io" target="_blank" rel="noopener noreferrer">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">An Analysis of Streaming Deep Reinforcement Learning for Adaptive
+              Continual Learning in Robotics</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://tjvitchutripop.github.io" target="_blank" rel="noopener noreferrer">Teeratham Vitchutripop</a>,</span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/alyssa-quarles-65735b316/" target="_blank" rel="noopener noreferrer">Alyssa Quarles</a>,</span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/wenhez/" target="_blank" rel="noopener noreferrer">Wenhe Zhang</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/richard-xue-023723273/" target="_blank" rel="noopener noreferrer">Richard Xue</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://dannyrakita.net" target="_blank" rel="noopener noreferrer">Daniel Rakita</a>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors" style="margin-top: 10px;">
+              <span class="author-block">
+                <!-- Yale Logo -->
+                <a href="https://www.yale.edu" target="_blank" rel="noopener noreferrer">
+                  <img src="static/images/yale-logo.png" alt="Yale Logo" width="80">
+                </a>
+                <!-- vertical line -->
+                <span
+                  style="display: inline-block; width: 1px; height: 35px; background-color: #5c5b5b; margin: 0 15px;"></span>
+                <!-- APOLLO lab logo -->
+                <a href="https://apollo-lab-yale.github.io" target="_blank" rel="noopener noreferrer">
+                  <img src="static/images/ALwide.png" alt="APOLLO Lab Logo" width="180">
+                </a>
+              </span>
+            </div>
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="" class="external-link button is-normal is-rounded is-dark" target="_blank" rel="noopener noreferrer">
+                  <span class="icon">
+                    <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Workshop Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="" class="external-link button is-normal is-rounded is-dark" target="_blank" rel="noopener noreferrer">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/tjvitchutripop/stream-rl-robotics"
+                  class="external-link button is-normal is-rounded is-dark" target="_blank" rel="noopener noreferrer">
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <div class="columns is-centered">
+          <video id="teaser" autoplay muted loop playsinline>
+            <source src="./static/videos/teaser-video.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Over the course of a lifetime, robots may encounter novel scenarios unaccounted for in its original
+              training that result in performance degradation. One common approach to mitigating this issue is to
+              further grow the offline training dataset in hopes of producing a policy robust to these changes. In
+              contrast, biological learning occurs moment-to-moment via a stream of experience, unlike the predominantly
+              batch-based and offline nature of deep learning. Although recent works show the feasibility of
+              stream-based deep reinforcement learning, where updates use only the latest experience, none have shown it
+              to be a viable continual learning framework for adapting robotic policies to unseen changes.
+            </p>
+            <p>
+              In this paper, we present the first analysis of streaming deep reinforcement learning for adaptive
+              continual learning in robotics. In particular, we show that, following an initial pretraining phase,
+              streaming deep RL can enable a robot to successfully adapt to unforeseen changes to itself, its
+              environment, or goals. Our primary experiments within quadruped locomotion demonstrate that a deep neural
+              network robotic policy with certain optimizers and plasticity loss mitigation techniques can successfully
+              leverage domain task knowledge from its pretraining to quickly adapt online to diverse changes via stream
+              learning, outperforming batch-based on-policy methods and improving task success rates by up to 90% over
+              the pretrained policy. Furthermore, we perform additional evaluations on robotic manipulation tasks to
+              determine if our previous observations extend to different robotic morphologies and scenarios. Our results
+              show that the successes observed in quadruped locomotion can be partially realized in manipulation with
+              stability and performance limitations. We conclude with a discussion on the limitations of our work and
+              its implications for the future of continual robot learning.
+            </p>
+            <p class="callout-card">
+              <b>TL;DR</b>: We present an analysis of streaming deep reinforcement learning for continual robotic adaptation,
+              focusing on how optimizers and plasticity loss mitigation techniques affect adaptation performance.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-vcentered is-variable is-8">
+        <div class="column is-5">
+          <h2 class="title is-3">Area of Investigation</h2>
+          <div class="content has-text-justified">
+            <p>In this analysis, we are generally assessing a robot's ability to adapt to new scenarios. In particular,
+              we consider settings where the transition dynamics and reward function of the underlying Markov Decision Process (MDP) can
+              change at any time.</p>
+            <p>Our goal is to investigate to what extent a pretrained policy can adapt smoothly and efficiently across these
+              sharp changes.</p>
+          </div>
+        </div>
+        <div class="column is-7">
+          <figure><img src="./static/images/overview.png"
+              alt="An overview of our analysis on streaming deep reinforcement learning for continual adaptation in robotic systems.">
+            <figcaption><b>Overview:</b> We examine if pretrained RL policies are able to adapt online in a
+              stream-fashion with no replay buffers to a set of scenarios that introduce a sudden change to the robot,
+              its environment, or goals.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section section-soft">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Analysis on Quadruped Locomotion</h2>
+      <div class="content has-text-justified">
+        <p>Our primary analysis is a series of experiments conducted within quadruped locomotion that 1) demonstrate the
+          potential capabilities of streaming deep RL for enabling continual robotic adaptation and 2) analyze how the
+          choice of certain optimizers or plasticity loss mitigation techniques can affect adaptation performance.</p>
+        <p>We developed 3 adaptation scenarios that test the robot’s ability to adapt to changes to its embodiment,
+          environment, and goals.</p>
+        <div class="task-list">
+          <div class="task-item">
+            <video autoplay muted loop playsinline>
+              <source src="./static/videos/quad_broken-leg.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="task-description"><b>Broken Leg:</b> We zero-mask 3 values of the action space to simulate the back left leg of the robot being stuck.</p>
+          </div>
+          <div class="task-item">
+            <video autoplay muted loop playsinline>
+              <source src="./static/videos/quad_slippery-floor.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="task-description"><b>Slippery Floor:</b> We change the static and dynamic friction coefficients of the ground in the environment from 0.3 to -1.8.</p>
+          </div>
+          <div class="task-item">
+            <video autoplay muted loop playsinline>
+              <source src="./static/videos/quad_goal-shift.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="task-description"><b>Goal Shift:</b> We offset the distribution of goal positions from the original centered at (0,0), to (0,3.0).</p>
+          </div>
+        </div>
+      </div>
+      <figure class="figure-wide"><img src="./static/images/quad_results.png"
+          alt="Average Success Rates Across 5 Seeds on Quadruped Locomotion Adaptation Scenarios.">
+        <figcaption>Table 1. Average Success Rates ± STD Across 5 Seeds on Quadruped Locomotion Adaptation Scenarios.
+        </figcaption>
+      </figure>
+      <div class="columns is-variable is-6 results-grid">
+        <div class="column">
+          <figure><img src="./static/images/goal_shift.png"
+              alt="The performance of Stream-AC variants on quadruped goal shift adaptation.">
+            <figcaption>Fig. 2: The performance of our different Stream-AC variants on the quadruped goal shift
+              adaptation is shown. AdaptiveObGD + LayerNorm outperforms other variants. ObGD is able to achieve a higher
+              performance than AdaptiveObGD, but at the cost of stability.</figcaption>
+          </figure>
+        </div>
+        <div class="column">
+          <figure><img src="./static/images/masd_quad.png"
+              alt="Average MASD Across 5 Seeds During Quadruped Locomotion Adaptation Phase.">
+            <figcaption>Table 2. Average MASD ± STD Across 5 Seeds During Quadruped Locomotion Adaptation Phase (lower
+              is more stable)</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="content has-text-justified">
+        <p class="callout-card"><b>Takeaway</b>: Optimizer choice significantly impacts adaptation performance in streaming deep RL. Plasticity loss mitigation techniques can be useful, but can also be detrimental due to the plasticity-stability tradeoff. With careful design choices for the optimizer and plasticity-preserving
+          components, streaming deep RL algorithms are adept at adapting pretrained policies to new scenarios, even when
+          compared to common batch-based deep RL approaches.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Analysis on Other Robotic Environments</h2>
+      <div class="content has-text-justified">
+        <p>We conduct a series of experiments in robotic manipulation environments to see whether our previous
+          observations about the performance of streaming deep RL for adaptation in quadruped locomotion hold with a
+          different task space and robotic morphology.</p>
+        <p>Our subsequent analyses are performed on two object manipulation tasks with different robot embodiments.</p>
+        <div class="task-list manipulation-tasks">
+          <div class="task-item">
+            <video autoplay muted loop playsinline>
+              <source src="./static/videos/pushcube_success.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="task-description"><b>Push Cube - Goal Shift:</b> Although the cubes are still spawned within the same range, we consistently offset the goal position by -0.15 on the y-axis.</p>
+          </div>
+          <div class="task-item">
+            <video autoplay muted loop playsinline>
+              <source src="./static/videos/movebox_success.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="task-description"><b>Transport Box - Impaired Joints:</b> We make certain shoulder, hand, and finger joints stuck via zero-masking and stiff by scaling their values in the action vector.</p>
+          </div>
+        </div>
+      </div>
+      <figure class="figure-wide"><img src="./static/images/manip_results.png"
+          alt="Average Success Rates Across 5 Seeds on Manipulation Adaptation Scenarios.">
+        <figcaption>Table 3. Average Success Rates ± STD Across 5 Seeds on Manipulation Adaptation Scenarios
+        </figcaption>
+      </figure>
+      <div class="columns is-centered" style="margin-top: 2rem;">
+        <div class="column is-three-quarters">
+          <figure><img src="./static/images/push_cube_goal_shift.png"
+              alt="The performance of Stream-AC variants on Push Cube goal shift adaptation.">
+            <figcaption>Fig. 3: The performance of 4 Stream-AC variants on the Push Cube goal shift adaptation is shown.
+              All methods show early signs of strong recovery, but performance declines over time after peaking.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="content has-text-justified">
+        <p class="callout-card"><b>Takeaway</b>: Streaming deep RL methods appear capable of
+        enabling neural networks to be sufficiently malleable to adapt
+        an agent's behavior, but can still face significant performance
+        decline and instability over time on manipulation tasks that may require greater precision. Furthermore, on control tasks
+        with greater complexity, there is still a limited capacity for
+        performance recovery and behavioral adaptation from noisy
+        single-sample stream updates. </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Discussion</h2>
+          <div class="content has-text-justified">
+            <p>In this paper, we presented the first analysis of streaming deep reinforcement learning for adaptive
+              continual learning in robotics. Our analysis was centered on using streaming deep RL to adapt pretrained
+              policies online to abrupt changes to the robot's embodiment, environment, and goals.</p>
+            <p><b>Our Main Takeaways</b>:</p>
+              <p class="callout-card">⚡️ State-of-the-art streaming deep RL algorithms show
+              sparks of effectiveness on certain robotic locomotion and
+              manipulation tasks.</p>
+              <p class="callout-card">🧠 Design choices that manage the plasticity-stability
+              tradeoff in neural networks are critical for performant
+              adaptive stream learning.</p>
+              <p class="callout-card">🏗️ Despite these promising results, realizing the full
+              potential of stream learning in robotics remains a major open challenge.</p >
+        </div>
+      </div>
+    </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- <section class="section"> -->
+    <!-- Concurrent Work. -->
+    <!-- <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Links</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            There's a lot of excellent work that was introduced around the same time as ours.
+          </p>
+          <p>
+            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an
+            idea similar to our windowed position encoding for coarse-to-fine optimization.
+          </p>
+          <p>
+            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a
+              href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+            both use deformation fields to model non-rigid scenes.
+          </p>
+          <p>
+            Some works model videos with a NeRF by directly modulating the density, such as <a
+              href="https://video-nerf.github.io/">Video-NeRF</a>, <a
+              href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a
+              href="https://neural-3d-video.github.io/">DyNeRF</a>
+          </p>
+          <p>
+            There are probably many more by the time you are reading this. Check out <a
+              href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a
+              href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+          </p>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Concurrent Work. -->
+  <!-- </section> -->
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      Coming soon... 💫
+      <!-- <pre><code>@article{vitchutripop2026streamrlrobotics,
+  author    = {},
+  title     = {Nerfies: Deformable Neural Radiance Fields},
+  journal   = {IROS Long-Term Perception Workshop},
+  year      = {2026},
+}</code></pre> -->
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is licensed under a <a rel="license noopener noreferrer"
+                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+            <p>
+              Website template borrowed from <a href="https://github.com/nerfies/nerfies.github.io" target="_blank" rel="noopener noreferrer">NeRFies</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
